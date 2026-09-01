@@ -1,3 +1,3 @@
 import "./styles.css";
-import { createShip } from "./factories";
+import { createShip, createGameboard } from "./factories.js";
 
