@@ -74,6 +74,11 @@ export function createGameboard () {
     }
 
     let receiveAttack = (x, y) => {
+        
+        if (x < 0 || x > 9 || y < 0 || y > 9 ) {
+            throw new Error("Position is not valid");
+        }
+
         if (board[x][y] === -1) {
             return false;
         } 
