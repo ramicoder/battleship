@@ -1,2 +1,3 @@
 import "./styles.css";
-import { createShip, createGameboard } from "./factories.js";
+import {  createShip, createGameboard, createPlayer } from "./factories.js";
+
