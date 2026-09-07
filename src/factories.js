@@ -40,11 +40,14 @@ export function createGameboard() {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ];
 
+  let getMissedShots = () => missedShots;
+
   let placeShip = (ship, row, col, orientation) => {
     try {
       if (ships.find((s) => s === ship) !== undefined) {
         throw new Error("Ship with this length already exists");
       }
+
       orientation = orientation.trim().toLowerCase();
       if (orientation === "vertical") {
         for (let k = row; k < row + ship.getLength(); k++) {
@@ -95,8 +98,17 @@ export function createGameboard() {
         board[x][y] = -1;
         return true;
       }
-    } catch (error) {return false;}
+    } catch (error) {
+      console.log(error.message);
+      return false;
+    }
   };
+
+  let allShipsSunk = () => {
+    console.log(ships);
+    if (ships.find((s) => s.isSunk() === false)) return false;
+    return true;
+  }
 
   function isPositionValid(row, col) {
     if (row < 0 || row > 9 || col < 0 || col > 9 || board[row][col] !== 0) {
@@ -105,20 +117,28 @@ export function createGameboard() {
     return true;
   }
 
-  return { board, missedShots, placeShip, receiveAttack };
+  return { board, getMissedShots, placeShip, receiveAttack, allShipsSunk };
 }
 
-function resetBoard(board) {
-  board = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  ];
+export function createPlayer(name, type) {
+  let board = createGameboard();
+  let getName = () => name.trim();
+  let getType = () => {
+    try {
+      type = type.trim().toLowerCase();
+      if (
+        type === "human" ||
+        type === "computer"
+      ) {
+        return type;
+      } else {
+        throw new Error("Invalid player type");
+      }
+    } catch (err) {
+      console.log(err.message);
+      return null;
+    }
+  }
+
+  return { getName, getType, board }
 }

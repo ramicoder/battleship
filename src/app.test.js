@@ -1,4 +1,4 @@
-import { createShip, createGameboard } from "./factories.js";
+import { createShip, createGameboard, createPlayer } from "./factories.js";
 
 
 test("Test vertical positioning", function () {
@@ -133,7 +133,7 @@ test("Tracking all missed attacks", function () {
   board.receiveAttack(9, 4);
   board.receiveAttack(7, 2);
 
-  expect( board.missedShots).toEqual([
+  expect( board.getMissedShots()).toEqual([
     [3, 5],
     [2, 5],
     [2, 3],
@@ -164,7 +164,7 @@ test("Tracking all missed attacks with an off-bound attack", function () {
   board.receiveAttack(12, 4);
   board.receiveAttack(7, 2);
 
-  expect(board.missedShots).toEqual([
+  expect(board.getMissedShots()).toEqual([
     [3, 5],
     [2, 5],
     [2, 3],
@@ -172,4 +172,119 @@ test("Tracking all missed attacks with an off-bound attack", function () {
     [7, 7],
     [9, 4],
   ]);
+});
+
+test("Board reporting if all ships are sunk", function () {
+  let board = createGameboard();
+  let ship1 = createShip(1);
+  let ship2 = createShip(2);
+  let ship3 = createShip(3);
+  let ship4 = createShip(4);
+  let ship5 = createShip(5);
+
+  board.placeShip(ship1, 1, 1, "horizontal");
+  board.placeShip(ship2, 2, 3, "horizontal");
+  board.placeShip(ship3, 3, 8, "vertical");
+  board.placeShip(ship4, 5, 0, "vertical");
+  board.placeShip(ship5, 5, 3, "horizontal");
+
+  board.receiveAttack(1, 1);
+
+  board.receiveAttack(2, 3);
+  board.receiveAttack(2, 4);
+
+  board.receiveAttack(3, 8);
+  board.receiveAttack(4, 8);
+  board.receiveAttack(5, 8);
+
+  board.receiveAttack(5, 7);
+  board.receiveAttack(5, 6);
+  board.receiveAttack(5, 5);
+  board.receiveAttack(5, 4);
+  board.receiveAttack(5, 3);
+
+  board.receiveAttack(5, 0);
+  board.receiveAttack(6, 0);
+  board.receiveAttack(7, 0);
+  board.receiveAttack(8, 0);
+
+  expect( board.allShipsSunk()).toBe(true);
+});
+
+test("Board reporting if all ships are NOT sunk", function () {
+  let board = createGameboard();
+  let ship1 = createShip(1);
+  let ship2 = createShip(2);
+  let ship3 = createShip(3);
+  let ship4 = createShip(4);
+  let ship5 = createShip(5);
+
+  board.placeShip(ship1, 1, 1, "horizontal");
+  board.placeShip(ship2, 2, 3, "horizontal");
+  board.placeShip(ship3, 3, 8, "vertical");
+  board.placeShip(ship4, 5, 0, "vertical");
+  board.placeShip(ship5, 5, 3, "horizontal");
+
+  board.receiveAttack(1, 1);
+
+  board.receiveAttack(2, 3);
+  board.receiveAttack(2, 4);
+
+  board.receiveAttack(3, 8);
+  board.receiveAttack(4, 8);
+  board.receiveAttack(5, 8);
+
+  board.receiveAttack(5, 7);
+  board.receiveAttack(5, 6);
+  board.receiveAttack(5, 5);
+  //board.receiveAttack(5, 4);  unattacked one ship to make sure not all are sunk
+  board.receiveAttack(5, 3);
+
+  board.receiveAttack(5, 0);
+  board.receiveAttack(6, 0);
+  board.receiveAttack(7, 0);
+  board.receiveAttack(8, 0);
+
+  expect(board.allShipsSunk()).toBe(false);
+});
+
+test("Player name check", function() {
+  let rami = createPlayer("Rami", "Human")
+  expect(rami.getName()).toEqual("Rami");
+})
+
+test("Player type check", function () {
+  let rami = createPlayer("Rami", "Human");
+  expect(rami.getType()).toEqual("human");
+});
+
+test("Invalid player type check", function() {
+  let rami = createPlayer("Rami", "Humanoid")
+  expect(rami.getType()).toBe(null);
+})
+
+test("Player board integration", function() {
+  let rami = createPlayer("Rami", "Human")
+  let ship = createShip(2);
+
+  expect(rami.board.placeShip(ship, 2, 4, "horizontal")).toEqual([
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 2, 2, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  ]);
+})
+
+test("Player board receiving attack", function () {
+  let rami = createPlayer("Rami", "Human");
+  let ship = createShip(2);
+
+  rami.board.placeShip(ship, 2, 4, "horizontal")
+  expect(rami.board.receiveAttack(2, 5)).toBe(true);
 });
