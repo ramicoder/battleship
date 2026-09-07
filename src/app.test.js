@@ -21,17 +21,13 @@ test("Test vertical positioning", function () {
 test("Invalid positioning", function () {
   let board = createGameboard();
   let ship4 = createShip(4);
-  expect(() => board.placeShip(ship4, -1, 1, "vertical")).toThrow(
-    "Position is not valid",
-  );
+  expect(board.placeShip(ship4, -1, 1, "vertical")).toBe(null);
 });
 
 test("Invalid orientation", function () {
   let board = createGameboard();
   let ship4 = createShip(4);
-  expect(() => board.placeShip(ship4, 1, 1, "verticaal")).toThrow(
-    "Orientation is not valid",
-  );
+  expect(board.placeShip(ship4, 1, 1, "verticaal")).toBe(null);
 });
 
 test("Hitting a ship until sunken", function () {
@@ -77,18 +73,14 @@ test("Test position overlapping", function () {
   let ship5 = createShip(5);
   let ship4 = createShip(4);
   board.placeShip(ship5, 4, 3, "horizontal");
-  expect(() => board.placeShip(ship4, 1, 4, "vertical")).toThrow(
-    "Position is not valid",
-  );
+  expect(board.placeShip(ship4, 1, 4, "vertical")).toBe(null);
 });
 
 test("Duplicated ship placement", function () {
   let board = createGameboard();
   let ship5 = createShip(5);
   board.placeShip(ship5, 1, 1, "horizontal");
-  expect(() => board.placeShip(ship5, 4, 3, "horizontal")).toThrow(
-    "Ship with this length already exists",
-  );
+  expect(board.placeShip(ship5, 4, 3, "horizontal")).toBe(null);
 });
 
 test("Attacking empty water", function () {

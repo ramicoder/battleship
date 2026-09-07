@@ -41,34 +41,39 @@ export function createGameboard() {
   ];
 
   let placeShip = (ship, row, col, orientation) => {
-    if (ships.find((s) => s === ship) !== undefined) {
-      throw new Error("Ship with this length already exists");
-    }
-    orientation = orientation.trim().toLowerCase();
-    if (orientation === "vertical") {
-      for (let k = row; k < row + ship.getLength(); k++) {
-        if (!isPositionValid(k, col)) {
-          throw new Error("Position is not valid");
+    try {
+      if (ships.find((s) => s === ship) !== undefined) {
+        throw new Error("Ship with this length already exists");
+      }
+      orientation = orientation.trim().toLowerCase();
+      if (orientation === "vertical") {
+        for (let k = row; k < row + ship.getLength(); k++) {
+          if (!isPositionValid(k, col)) {
+            throw new Error("Position is not valid");
+          }
         }
-      }
-      for (let i = row; i < row + ship.getLength(); i++) {
-        board[i][col] = ship.getId();
-      }
-    } else if (orientation === "horizontal") {
-      for (let k = col; k < col + ship.getLength(); k++) {
-        if (!isPositionValid(row, k)) {
-          throw new Error("Position is not valid");
+        for (let i = row; i < row + ship.getLength(); i++) {
+          board[i][col] = ship.getId();
         }
-      }
+      } else if (orientation === "horizontal") {
+        for (let k = col; k < col + ship.getLength(); k++) {
+          if (!isPositionValid(row, k)) {
+            throw new Error("Position is not valid");
+          }
+        }
 
-      for (let i = col; i < col + ship.getLength(); i++) {
-        board[row][i] = ship.getId();
+        for (let i = col; i < col + ship.getLength(); i++) {
+          board[row][i] = ship.getId();
+        }
+      } else {
+        throw new Error("Orientation is not valid");
       }
-    } else {
-      throw new Error("Orientation is not valid");
+      ships.push(ship);
+      return board;
+    } catch (err) {
+        console.log(err.message)
+        return null;
     }
-    ships.push(ship);
-    return board;
   };
 
   let receiveAttack = (x, y) => {
