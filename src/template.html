@@ -7,18 +7,44 @@
   </head>
   <body>
     <header>
-      <h1>Rami's Battleship</h1>
+      <h1 style="font-family: cursive; font-size: 60px;">Rami's Battleship</h1>
     </header>
 
     <main class="game-container">
 
+      <div class="ship-dock">
+        <h2 style="margin-bottom: 30px; margin-top: 50px;">Place your ships!</h2>
+        <div id="fleet-container" class="fleet">
+          <!-- Carrier (5) -->
+          <div class="ship" data-length="5">
+            <div class="ship-box"></div><div class="ship-box"></div><div class="ship-box"></div><div class="ship-box"></div><div class="ship-box"></div>
+          </div>
+          <!-- Battleship (4) -->
+          <div class="ship" data-length="4">
+            <div class="ship-box"></div><div class="ship-box"></div><div class="ship-box"></div><div class="ship-box"></div>
+          </div>
+          <!-- Cruiser (3) -->
+          <div class="ship" data-length="3">
+            <div class="ship-box"></div><div class="ship-box"></div><div class="ship-box"></div>
+          </div>
+          <!-- Submarine (3) -->
+          <div class="ship" data-length="2">
+            <div class="ship-box"></div><div class="ship-box"></div>
+          </div>
+          <!-- Destroyer (2) -->
+          <div class="ship" data-length="1" style="margin-bottom: 30px;">
+            <div class="ship-box"></div>
+          </div>
+        </div>
+        <span>When placed on the board, click to rotate</span>
+      </div>
       <div class="player-side">
         <div id="player-board" class="board">
 
         </div>
       </div>
 
-      <div class="computer-side">
+      <div class="computer-side hidden">
         <div id="computer-board" class="board">
 
         </div>
