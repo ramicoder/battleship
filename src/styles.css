@@ -125,3 +125,8 @@ input:focus {
 .ship:hover .ship-box {
     background-color: #cbd5e1;
 }
+
+.ship-placed {
+    background-color: #94a3b8;
+    border: 1px solid #1e293b;
+}
