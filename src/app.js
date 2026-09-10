@@ -7,6 +7,9 @@ const input = document.querySelector("input");
 const playerBoard = document.getElementById("player-board");
 const computerBoard = document.getElementById("computer-board");
 
+const playerBoardLogic = createGameboard();
+const computerBoardLogic = createGameboard();
+
 for (let i = 0; i < 10; i++) {
   for (let j = 0; j < 10; j++) {
     let cell = document.createElement("div");
@@ -91,7 +94,7 @@ cells.forEach((cell) => {
       if (dockedShip) {
         dockedShip.setAttribute("draggable", "false");
         dockedShip.style.opacity = "0.3";
-    console.log(`Ship of length ${length} placed at ${row}, ${startCol}`)
+        console.log(`Ship of length ${length} placed at ${row}, ${startCol}`)
       }
     }
   });
@@ -107,7 +110,6 @@ playerBoard.addEventListener("click", (e) => {
   let startRow = parseInt(cell.dataset.startRow);
   let orientation = cell.dataset.orientation;
 
-  console.log(cell.dataset.orientation);
   if (length === 1) return;
 
   if (orientation === "horizontal") {
@@ -164,7 +166,7 @@ playerBoard.addEventListener("click", (e) => {
 
 
 
-//enable players to put the ships
+//code the console logic along UI logic
 //let computer place its ships
 
 //button.addEventListener("click", () => {
