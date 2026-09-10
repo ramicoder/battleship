@@ -110,6 +110,54 @@ export function createGameboard() {
     return true;
   }
 
+  function removeShip(ship) {
+    ships.splice(ships.indexOf(ship), 1);
+    let id = ship.getId();
+    for (let r = 0; r < 10; r++) {
+      for (let c = 0; c < 10; c++) {
+        if (board[r][c] === id) {
+          board[r][c] = 0;
+        }
+      }
+    }
+  }
+
+  let changeOrientation = (ship) => {
+    let id = ship.getId();
+    let startRow = -1;
+    let startCol = -1;
+    let currentOrientation = "";
+
+    for (let r = 0; r < 10; r++) {
+      for (let c = 0; c < 10; c++) {
+        if (board[r][c] === id) {
+          startRow = r;
+          startCol = c;
+
+          if (c + 1 < 10 && board[r][c + 1] === id) {
+            currentOrientation = "horizontal";
+          } else {
+            currentOrientation = "vertical";
+          }
+          break;
+        }
+      }
+      if (startRow !== -1) break;
+    }
+    removeShip(ship);
+    let newOrientation =
+      currentOrientation === "horizontal" ? "vertical" : "horizontal";
+
+    let success = placeShip(ship, startRow, startCol, newOrientation);
+
+    if (success === null) {
+      placeShip(ship, startRow, startCol, currentOrientation);
+      return false;
+    }
+
+    return board;
+  }
+
   function isPositionValid(row, col) {
     if (row < 0 || row > 9 || col < 0 || col > 9 || board[row][col] !== 0) {
       return false;
@@ -117,7 +165,7 @@ export function createGameboard() {
     return true;
   }
 
-  return { board, getMissedShots, placeShip, receiveAttack, allShipsSunk };
+  return { board, getMissedShots, placeShip, receiveAttack, allShipsSunk, changeOrientation };
 }
 
 export function createPlayer(name, type) {

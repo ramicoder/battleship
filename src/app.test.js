@@ -288,3 +288,65 @@ test("Player board receiving attack", function () {
   rami.board.placeShip(ship, 2, 4, "horizontal")
   expect(rami.board.receiveAttack(2, 5)).toBe(true);
 });
+
+test("Ship orientation changing", function () {
+  let board = createGameboard();
+  let ship1 = createShip(1);
+  let ship2 = createShip(2);
+  let ship3 = createShip(3);
+  let ship4 = createShip(4);
+  let ship5 = createShip(5);
+
+  board.placeShip(ship1, 1, 1, "horizontal");
+  board.placeShip(ship2, 2, 3, "horizontal");
+  board.placeShip(ship3, 3, 8, "vertical");
+  board.placeShip(ship4, 5, 0, "vertical");
+  board.placeShip(ship5, 5, 3, "horizontal");
+
+  expect(board.changeOrientation(ship2)).toEqual([
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 2, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 2, 0, 0, 0, 0, 3, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 3, 0],
+    [4, 0, 0, 5, 5, 5, 5, 5, 3, 0],
+    [4, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [4, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [4, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  ]);
+});
+
+test("Ship orientation out of bounds", function () {
+  let board = createGameboard();
+  let ship1 = createShip(1);
+  let ship2 = createShip(2);
+  let ship3 = createShip(3);
+  let ship4 = createShip(4);
+  let ship5 = createShip(5);
+
+  board.placeShip(ship1, 1, 1, "horizontal");
+  board.placeShip(ship2, 2, 3, "horizontal");
+  board.placeShip(ship3, 3, 8, "vertical");
+  board.placeShip(ship4, 5, 0, "vertical");
+  board.placeShip(ship5, 5, 3, "horizontal");
+
+  expect(board.changeOrientation(ship3)).toBe(false);
+});
+
+test("Ship orientation overlap", function () {
+  let board = createGameboard();
+  let ship1 = createShip(1);
+  let ship2 = createShip(2);
+  let ship3 = createShip(3);
+  let ship4 = createShip(4);
+  let ship5 = createShip(5);
+
+  board.placeShip(ship1, 1, 1, "horizontal");
+  board.placeShip(ship2, 2, 3, "horizontal");
+  board.placeShip(ship3, 3, 8, "vertical");
+  board.placeShip(ship4, 5, 0, "vertical");
+  board.placeShip(ship5, 5, 3, "horizontal");
+
+  expect(board.changeOrientation(ship4)).toBe(false);
+});

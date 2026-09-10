@@ -91,7 +91,7 @@ cells.forEach((cell) => {
       }
     }
   });
-});
+  });
 
 //enable players to put the ships
 //let computer place its ships
