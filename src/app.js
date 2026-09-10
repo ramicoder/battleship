@@ -107,6 +107,7 @@ playerBoard.addEventListener("click", (e) => {
   let startRow = parseInt(cell.dataset.startRow);
   let orientation = cell.dataset.orientation;
 
+  console.log(cell.dataset.orientation);
   if (length === 1) return;
 
   if (orientation === "horizontal") {
@@ -121,7 +122,7 @@ playerBoard.addEventListener("click", (e) => {
       let targetCell = document.querySelector(`[data-row = "${startRow}"][data-col= "${startCol + i}"]`);
       targetCell.classList.remove('ship-placed');
     }
-    for (let i = 1; i < length; i++) {
+    for (let i = 0; i < length; i++) {
       let targetCell = document.querySelector(`[data-row = "${startRow + i}"][data-col = "${startCol}"]`);
       targetCell.classList.add('ship-placed');
       targetCell.dataset.orientation = "vertical";
@@ -147,7 +148,7 @@ playerBoard.addEventListener("click", (e) => {
       );
       targetCell.classList.remove("ship-placed");
     }
-    for (let i = 1; i < length; i++) {
+    for (let i = 0; i < length; i++) {
       let targetCell = document.querySelector(
         `[data-row = "${startRow}"][data-col = "${startCol + i}"]`,
       );
