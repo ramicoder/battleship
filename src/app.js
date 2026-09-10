@@ -80,6 +80,10 @@ cells.forEach((cell) => {
           `.cell[data-row="${row}"][data-col="${startCol + i}"]`,
         );
         targetCell.classList.add("ship-placed");
+        targetCell.dataset.startRow = row;
+        targetCell.dataset.startCol = startCol;
+        targetCell.dataset.length = length;
+        targetCell.dataset.orientation = "horizontal";
       }
 
       let shipId = e.dataTransfer.getData("shipId");
@@ -91,12 +95,78 @@ cells.forEach((cell) => {
       }
     }
   });
-  });
+
+});
+
+playerBoard.addEventListener("click", (e) => {
+  let cell = e.target;
+  if (!cell.classList.contains("ship-placed")) return;
+
+  let length = parseInt(cell.dataset.length);
+  let startCol = parseInt(cell.dataset.startCol);
+  let startRow = parseInt(cell.dataset.startRow);
+  let orientation = cell.dataset.orientation;
+
+  if (length === 1) return;
+
+  if (orientation === "horizontal") {
+    if (startRow + (length - 1) > 9) return;
+
+    for (let i = 1; i < length; i++) {
+      let targetCell = document.querySelector(`.cell[data-row = "${startRow + i}"][data-col = "${startCol}"]`);
+      if (targetCell && targetCell.classList.contains("ship-placed")) return;
+    }
+
+    for (let i = 1; i < length; i++) {
+      let targetCell = document.querySelector(`[data-row = "${startRow}"][data-col= "${startCol + i}"]`);
+      targetCell.classList.remove('ship-placed');
+    }
+    for (let i = 1; i < length; i++) {
+      let targetCell = document.querySelector(`[data-row = "${startRow + i}"][data-col = "${startCol}"]`);
+      targetCell.classList.add('ship-placed');
+      targetCell.dataset.orientation = "vertical";
+      targetCell.dataset.startRow = startRow;
+      targetCell.dataset.startCol = startCol;
+      targetCell.dataset.length = length;
+    }
+  }
+
+  if (orientation === "vertical") {
+    if (startCol + (length - 1) > 9) return;
+
+    for (let i = 1; i < length; i++) {
+      let targetCell = document.querySelector(
+        `.cell[data-row = "${startRow}"][data-col = "${startCol + i}"]`,
+      );
+      if (targetCell && targetCell.classList.contains("ship-placed")) return;
+    }
+
+    for (let i = 1; i < length; i++) {
+      let targetCell = document.querySelector(
+        `[data-row = "${startRow + i}"][data-col= "${startCol}"]`,
+      );
+      targetCell.classList.remove("ship-placed");
+    }
+    for (let i = 1; i < length; i++) {
+      let targetCell = document.querySelector(
+        `[data-row = "${startRow}"][data-col = "${startCol + i}"]`,
+      );
+      targetCell.classList.add("ship-placed");
+      targetCell.dataset.orientation = "horizontal";
+      targetCell.dataset.startRow = startRow;
+      targetCell.dataset.startCol = startCol;
+      targetCell.dataset.length = length;
+    }
+  }
+});
+
+
+
 
 //enable players to put the ships
 //let computer place its ships
 
-button.addEventListener("click", () => {
+//button.addEventListener("click", () => {
 
   //if (input.value === "")
         //add an error msg
@@ -104,6 +174,4 @@ button.addEventListener("click", () => {
   //create a player with that name
   //spot picking logic turn by turn while all ships are not sunk
   //once loop is done display winner
-}
-
-);
+//});
