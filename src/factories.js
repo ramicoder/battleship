@@ -87,7 +87,7 @@ export function createGameboard() {
         throw new Error("Position is not valid");
       }
       if (board[x][y] === -1) {
-        return false;
+        return null;
       }
       if (board[x][y] === 0) {
         missedShots.push([x, y]);
@@ -192,7 +192,7 @@ export function createPlayer(name, type) {
   return { getName, getType, board }
 }
 
-function randomPlacement(board) {
+export function randomPlacement(board) {
   let ship1 = createShip(1);
   let ship2 = createShip(2);
   let ship3 = createShip(3);
@@ -258,8 +258,16 @@ function randomPlacement(board) {
     );
   } while (result === null);
 
-  console.log(board)
 }
 
-const randomIndex = () => Math.floor(Math.random() * 10);
+export function randomReceiveAttack(board) {
+  let result;
+  do {
+    let randomRow = randomIndex();
+    let randomCol = randomIndex();
+    result = board.receiveAttack(randomRow, randomCol);
+  } while (result === null);
+}
+
+export const randomIndex = () => Math.floor(Math.random() * 10);
 

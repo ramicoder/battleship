@@ -110,7 +110,7 @@ test("Attacking an attacked spot", function () {
   board.placeShip(ship3, 4, 3, "horizontal");
   board.receiveAttack(4, 4);
   board.receiveAttack(4, 5);
-  expect(board.receiveAttack(4, 4)).toBe(false);
+  expect(board.receiveAttack(4, 4)).toBe(null);
 });
 
 test("Tracking all missed attacks", function () {
