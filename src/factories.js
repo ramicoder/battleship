@@ -72,6 +72,7 @@ export function createGameboard() {
         throw new Error("Orientation is not valid");
       }
       ships.push(ship);
+      console.log(`Console Logic: Ship ${ship.getId()} got placed at ${row}, ${col} with orientation ${orientation}`);
       return board;
     } catch (err) {
         console.log(err.message)
@@ -154,7 +155,7 @@ export function createGameboard() {
       placeShip(ship, startRow, startCol, currentOrientation);
       return false;
     }
-
+    console.log(`Console Logic: Ship ${ship.getId()}'s orientation switched to ${newOrientation}`);
     return board;
   }
 
@@ -190,3 +191,75 @@ export function createPlayer(name, type) {
 
   return { getName, getType, board }
 }
+
+function randomPlacement(board) {
+  let ship1 = createShip(1);
+  let ship2 = createShip(2);
+  let ship3 = createShip(3);
+  let ship4 = createShip(4);
+  let ship5 = createShip(5);
+  let result;
+  do {
+    let randomRow = randomIndex();
+    let randomCol = randomIndex();
+    let randomOrientation = (Math.floor(Math.random() * 2) === 1) ? "horizontal" : "vertical";
+    result = board.placeShip(ship1, randomRow, randomCol, randomOrientation);
+  } while (result === null);
+
+  do {
+    let randomRow = randomIndex();
+    let randomCol = randomIndex();
+    let randomOrientation =
+      Math.floor(Math.random() * 2) === 1 ? "horizontal" : "vertical";
+    result = board.placeShip(
+      ship2,
+      randomRow,
+      randomCol,
+      randomOrientation,
+    );
+  } while (result === null);
+
+  do {
+    let randomRow = randomIndex();
+    let randomCol = randomIndex();
+    let randomOrientation =
+      Math.floor(Math.random() * 2) === 1 ? "horizontal" : "vertical";
+    result = board.placeShip(
+      ship3,
+      randomRow,
+      randomCol,
+      randomOrientation,
+    );
+  } while (result === null);
+
+  do {
+    let randomRow = randomIndex();
+    let randomCol = randomIndex();
+    let randomOrientation =
+      Math.floor(Math.random() * 2) === 1 ? "horizontal" : "vertical";
+    result = board.placeShip(
+      ship4,
+      randomRow,
+      randomCol,
+      randomOrientation,
+    );
+  } while (result === null);
+
+  do {
+    let randomRow = randomIndex();
+    let randomCol = randomIndex();
+    let randomOrientation =
+      Math.floor(Math.random() * 2) === 1 ? "horizontal" : "vertical";
+    result = board.placeShip(
+      ship5,
+      randomRow,
+      randomCol,
+      randomOrientation,
+    );
+  } while (result === null);
+
+  console.log(board)
+}
+
+const randomIndex = () => Math.floor(Math.random() * 10);
+

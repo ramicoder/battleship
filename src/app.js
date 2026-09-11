@@ -1,14 +1,22 @@
 import "./styles.css";
 import {  createShip, createGameboard, createPlayer } from "./factories.js";
 
+const ship1 = createShip(1);
+const ship2 = createShip(2);
+const ship3 = createShip(3);
+const ship4 = createShip(4);
+const ship5 = createShip(5);
+
+const playerBoardLogic = createGameboard();
+const computerBoardLogic = createGameboard();
+
+
 const button = document.getElementById("player-button");
 const input = document.querySelector("input");
 
 const playerBoard = document.getElementById("player-board");
 const computerBoard = document.getElementById("computer-board");
 
-const playerBoardLogic = createGameboard();
-const computerBoardLogic = createGameboard();
 
 for (let i = 0; i < 10; i++) {
   for (let j = 0; j < 10; j++) {
@@ -20,7 +28,7 @@ for (let i = 0; i < 10; i++) {
     playerBoard.appendChild(cell);
   }
 }
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 10; i++) {
   for (let j = 0; j < 10; j++) {
     let cell = document.createElement("div");
     cell.classList.add("cell");
@@ -95,6 +103,24 @@ cells.forEach((cell) => {
         dockedShip.setAttribute("draggable", "false");
         dockedShip.style.opacity = "0.3";
         console.log(`Ship of length ${length} placed at ${row}, ${startCol}`)
+
+        switch (length){
+          case 1:
+            playerBoardLogic.placeShip(ship1, row, startCol, "horizontal");
+            break;
+            case 2:
+              playerBoardLogic.placeShip(ship2, row, startCol, "horizontal");
+              break;
+              case 3:
+                playerBoardLogic.placeShip(ship3, row, startCol, "horizontal");
+                break;
+                case 4:
+                  playerBoardLogic.placeShip(ship4, row, startCol, "horizontal");
+                  break;
+                  case 5:
+                    playerBoardLogic.placeShip(ship5, row, startCol, "horizontal");
+                    break;
+        }
       }
     }
   });
@@ -105,11 +131,27 @@ playerBoard.addEventListener("click", (e) => {
   let cell = e.target;
   if (!cell.classList.contains("ship-placed")) return;
 
+
   let length = parseInt(cell.dataset.length);
   let startCol = parseInt(cell.dataset.startCol);
   let startRow = parseInt(cell.dataset.startRow);
   let orientation = cell.dataset.orientation;
 
+
+  switch (length) {
+    case 2:
+      playerBoardLogic.changeOrientation(ship2);
+      break;
+    case 3:
+      playerBoardLogic.changeOrientation(ship3);
+      break;
+    case 4:
+      playerBoardLogic.changeOrientation(ship4);
+      break;
+    case 5:
+      playerBoardLogic.changeOrientation(ship5);
+      break;
+  }
   if (length === 1) return;
 
   if (orientation === "horizontal") {
@@ -163,12 +205,8 @@ playerBoard.addEventListener("click", (e) => {
   }
 });
 
-
-
-
-//code the console logic along UI logic
 //let computer place its ships
-
+//make sure console logic code works in parallel
 //button.addEventListener("click", () => {
 
   //if (input.value === "")
