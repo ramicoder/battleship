@@ -166,7 +166,7 @@ export function createGameboard() {
     return true;
   }
 
-let allShipsPlaced = () => {
+  let allShipsPlaced = () => {
     if (ships.length === 5) return true;
     return false;
   }
@@ -267,11 +267,14 @@ export function randomPlacement(board) {
 
 export function randomReceiveAttack(board) {
   let result;
+  let randomRow;
+  let randomCol;
   do {
-    let randomRow = randomIndex();
-    let randomCol = randomIndex();
+     randomRow = randomIndex();
+     randomCol = randomIndex();
     result = board.receiveAttack(randomRow, randomCol);
   } while (result === null);
+  return [randomRow, randomCol];
 }
 
 export const randomIndex = () => Math.floor(Math.random() * 10);

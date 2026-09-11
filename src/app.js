@@ -208,17 +208,21 @@ playerBoard.addEventListener("click", (e) => {
     }
   }
 });
+computerBoard.addEventListener("click", (e) => {
+  let cell = e.target;
+  let row = parseInt(cell.dataset.row);
+  let col = parseInt(cell.dataset.col);
+  attack(cell, row, col);
 
-//let computer place its ships
-//make sure console logic code works in parallel
+})
 
 const input = document.querySelector("input");
 const ageError = document.getElementById('ageError')
 const shipDock = document.querySelector('.ship-dock')
 const computerSide = document.querySelector('.computer-side')
 
-button.addEventListener('click', (e) => {
-  if (input.value === "") {
+button.addEventListener('click', () => {
+  if (input.value.trim() === "") {
     ageError.textContent = "This field cannot be left blank.";
     input.style.backgroundColor = "#5e2929";
     return;
@@ -227,11 +231,68 @@ button.addEventListener('click', (e) => {
     input.style.backgroundColor = "#1e293b";
     shipDock.classList.add("hidden");
     computerSide.classList.remove("hidden");
+    playerBoard.style.pointerEvents = "none";
+    button.disabled = true;
+    randomPlacement(computerBoardLogic);
   }
 })
 
+let attacking = document.querySelector(".attack")
+let attacked = document.querySelector(".attacked");
 
-  //create a player with that name
-  //spot picking logic turn by turn while all ships are not sunk
-  //once loop is done display winner
-//
+function attack(cell, x, y) {
+  let row = x;
+  let col = y;
+  if (isNaN(row) || isNaN(col)) {
+    console.error("Player click failed. Cell data:", cell);
+    return;
+  }
+  attacked.classList.add("hidden");
+  attacking.classList.remove("hidden");
+  let attempt = computerBoardLogic.receiveAttack(row, col);
+
+  if (attempt === true) {
+    cell.style.backgroundColor = "#ff0000";
+    cell.style.pointerEvents = "none";
+  } else {
+    cell.style.backgroundColor = "#604a4a";
+    cell.style.pointerEvents = "none";
+
+    getAttacked();
+  }
+
+}
+
+function getAttacked() {
+  attacking.classList.add("hidden");
+  attacked.classList.remove("hidden");
+
+  let attempt;
+
+  do {
+    let coordinates = randomReceiveAttack(playerBoardLogic);
+    let row = coordinates[0];
+    let col = coordinates[1];
+
+    if (isNaN(row) || isNaN(col)) {
+      console.error("Computer attack failed. Coords:", coordinates);
+      return;
+    }
+
+    attempt = playerBoardLogic.receiveAttack(row, col);
+    let targetCell = playerBoard.querySelector(
+      `.cell[data-row="${row}"][data-col="${col}"]`,
+    );
+
+    if (attempt === true) {
+      targetCell.style.backgroundColor = "#ff0000";
+    } else {
+      targetCell.style.backgroundColor = "#604a4a";
+    }
+  } while (attempt === true);
+
+}
+
+//correct turn by turn sequence (especially when they attack)
+//appropriately positioning "attack" and "getting attacked"
+//gameover logic
