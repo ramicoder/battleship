@@ -166,7 +166,12 @@ export function createGameboard() {
     return true;
   }
 
-  return { board, getMissedShots, placeShip, receiveAttack, allShipsSunk, changeOrientation };
+let allShipsPlaced = () => {
+    if (ships.length === 5) return true;
+    return false;
+  }
+
+  return { board, getMissedShots, placeShip, receiveAttack, allShipsSunk, changeOrientation, allShipsPlaced };
 }
 
 export function createPlayer(name, type) {
@@ -270,4 +275,3 @@ export function randomReceiveAttack(board) {
 }
 
 export const randomIndex = () => Math.floor(Math.random() * 10);
-

@@ -1,5 +1,5 @@
 import "./styles.css";
-import {  createShip, createGameboard, createPlayer } from "./factories.js";
+import {  createShip, createGameboard, createPlayer, randomPlacement, randomReceiveAttack} from "./factories.js";
 
 const ship1 = createShip(1);
 const ship2 = createShip(2);
@@ -7,12 +7,12 @@ const ship3 = createShip(3);
 const ship4 = createShip(4);
 const ship5 = createShip(5);
 
+const button = document.getElementById("player-button");
+button.disabled = "true";
+button.style.opacity = "0.5";
+
 const playerBoardLogic = createGameboard();
 const computerBoardLogic = createGameboard();
-
-
-const button = document.getElementById("player-button");
-const input = document.querySelector("input");
 
 const playerBoard = document.getElementById("player-board");
 const computerBoard = document.getElementById("computer-board");
@@ -35,7 +35,7 @@ for (let i = 0; i < 10; i++) {
     cell.id = "computer-cell";
     cell.dataset.row = i;
     cell.dataset.col = j;
-    playerBoard.appendChild(cell);
+    computerBoard.appendChild(cell);
   }
 }
 
@@ -120,6 +120,10 @@ cells.forEach((cell) => {
                   case 5:
                     playerBoardLogic.placeShip(ship5, row, startCol, "horizontal");
                     break;
+        }
+        if (playerBoardLogic.allShipsPlaced()) {
+          button.disabled = false;
+          button.style.opacity = "1";
         }
       }
     }
@@ -207,12 +211,27 @@ playerBoard.addEventListener("click", (e) => {
 
 //let computer place its ships
 //make sure console logic code works in parallel
-//button.addEventListener("click", () => {
 
-  //if (input.value === "")
-        //add an error msg
+const input = document.querySelector("input");
+const ageError = document.getElementById('ageError')
+const shipDock = document.querySelector('.ship-dock')
+const computerSide = document.querySelector('.computer-side')
+
+button.addEventListener('click', (e) => {
+  if (input.value === "") {
+    ageError.textContent = "This field cannot be left blank.";
+    input.style.backgroundColor = "#5e2929";
+    return;
+  } else {
+    ageError.textContent = "";
+    input.style.backgroundColor = "#1e293b";
+    shipDock.classList.add("hidden");
+    computerSide.classList.remove("hidden");
+  }
+})
+
 
   //create a player with that name
   //spot picking logic turn by turn while all ships are not sunk
   //once loop is done display winner
-//});
+//
