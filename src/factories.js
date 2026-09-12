@@ -274,7 +274,7 @@ export function randomReceiveAttack(board) {
      randomCol = randomIndex();
     result = board.receiveAttack(randomRow, randomCol);
   } while (result === null);
-  return [randomRow, randomCol];
+  return [randomRow, randomCol, result];
 }
 
 export const randomIndex = () => Math.floor(Math.random() * 10);

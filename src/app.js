@@ -255,10 +255,11 @@ function attack(cell, x, y) {
     cell.style.backgroundColor = "#ff0000";
     cell.style.pointerEvents = "none";
   } else {
+    computerBoard.style.pointerEvents = "none";
     cell.style.backgroundColor = "#604a4a";
     cell.style.pointerEvents = "none";
+    setTimeout(getAttacked, 1100);
 
-    getAttacked();
   }
 
 }
@@ -274,15 +275,10 @@ function getAttacked() {
     let row = coordinates[0];
     let col = coordinates[1];
 
-    if (isNaN(row) || isNaN(col)) {
-      console.error("Computer attack failed. Coords:", coordinates);
-      return;
-    }
-
-    attempt = playerBoardLogic.receiveAttack(row, col);
     let targetCell = playerBoard.querySelector(
       `.cell[data-row="${row}"][data-col="${col}"]`,
     );
+    attempt = coordinates[2];
 
     if (attempt === true) {
       targetCell.style.backgroundColor = "#ff0000";
@@ -290,7 +286,7 @@ function getAttacked() {
       targetCell.style.backgroundColor = "#604a4a";
     }
   } while (attempt === true);
-
+  computerBoard.style.pointerEvents = "auto";
 }
 
 //correct turn by turn sequence (especially when they attack)
