@@ -7,6 +7,9 @@ const ship3 = createShip(3);
 const ship4 = createShip(4);
 const ship5 = createShip(5);
 
+let player;
+let system;
+
 const button = document.getElementById("player-button");
 button.disabled = "true";
 button.style.opacity = "0.5";
@@ -221,74 +224,95 @@ const ageError = document.getElementById('ageError')
 const shipDock = document.querySelector('.ship-dock')
 const computerSide = document.querySelector('.computer-side')
 
+let attacking = document.querySelector(".attack")
+let attacked = document.querySelector(".attacked");
+
+
 button.addEventListener('click', () => {
   if (input.value.trim() === "") {
     ageError.textContent = "This field cannot be left blank.";
     input.style.backgroundColor = "#5e2929";
     return;
   } else {
+    player = createPlayer(input.value, "human");
+    system = createPlayer("The Matrix ", "computer")
+
+    player.board = playerBoardLogic;
+    system.board = computerBoardLogic;
+
     ageError.textContent = "";
     input.style.backgroundColor = "#1e293b";
     shipDock.classList.add("hidden");
     computerSide.classList.remove("hidden");
     playerBoard.style.pointerEvents = "none";
+    attacking.classList.remove("hidden");
     button.disabled = true;
     randomPlacement(computerBoardLogic);
   }
 })
 
-let attacking = document.querySelector(".attack")
-let attacked = document.querySelector(".attacked");
-
 function attack(cell, x, y) {
-  let row = x;
-  let col = y;
-  if (isNaN(row) || isNaN(col)) {
-    console.error("Player click failed. Cell data:", cell);
-    return;
-  }
-  attacked.classList.add("hidden");
-  attacking.classList.remove("hidden");
-  let attempt = computerBoardLogic.receiveAttack(row, col);
+  if (isNaN(x) || isNaN(y)) return;
+
+  let attempt = computerBoardLogic.receiveAttack(x, y);
 
   if (attempt === true) {
     cell.style.backgroundColor = "#ff0000";
     cell.style.pointerEvents = "none";
+
+    if (computerBoardLogic.allShipsSunk()) {
+      showGameOver(`${player.getName()} won!`);
+      computerBoard.style.pointerEvents = "none";
+      playerBoard.style.pointerEvents = "none";
+      return;
+    }
   } else {
-    computerBoard.style.pointerEvents = "none";
     cell.style.backgroundColor = "#604a4a";
     cell.style.pointerEvents = "none";
-    setTimeout(getAttacked, 1100);
 
+    attacking.classList.add("hidden");
+    attacked.classList.remove("hidden");
+    computerBoard.style.pointerEvents = "none";
+
+    setTimeout(getAttacked, 1000);
   }
-
 }
 
 function getAttacked() {
-  attacking.classList.add("hidden");
-  attacked.classList.remove("hidden");
+  let attackData = randomReceiveAttack(playerBoardLogic);
+  let row = attackData[0];
+  let col = attackData[1];
+  let attempt = attackData[2];
 
-  let attempt;
+  let targetCell = playerBoard.querySelector(
+    `.cell[data-row="${row}"][data-col="${col}"]`,
+  );
 
-  do {
-    let coordinates = randomReceiveAttack(playerBoardLogic);
-    let row = coordinates[0];
-    let col = coordinates[1];
-
-    let targetCell = playerBoard.querySelector(
-      `.cell[data-row="${row}"][data-col="${col}"]`,
-    );
-    attempt = coordinates[2];
-
-    if (attempt === true) {
-      targetCell.style.backgroundColor = "#ff0000";
-    } else {
-      targetCell.style.backgroundColor = "#604a4a";
+  if (attempt === true) {
+    targetCell.style.backgroundColor = "#ff0000";
+    if (playerBoardLogic.allShipsSunk()) {
+      showGameOver(`${system.getName()} won!`);
+      computerBoard.style.pointerEvents = "none";
+      playerBoard.style.pointerEvents = "none";
+      return;
     }
-  } while (attempt === true);
-  computerBoard.style.pointerEvents = "auto";
+    setTimeout(getAttacked, 1000);
+  } else {
+    targetCell.style.backgroundColor = "#604a4a";
+
+    attacked.classList.add("hidden");
+    attacking.classList.remove("hidden");
+    computerBoard.style.pointerEvents = "auto";
+  }
 }
 
-//correct turn by turn sequence (especially when they attack)
-//appropriately positioning "attack" and "getting attacked"
-//gameover logic
+const modal = document.getElementById("game-over-modal");
+const modalText = document.getElementById("game-over-text");
+
+function showGameOver(message) {
+  modalText.textContent = message;
+  modal.classList.remove("hidden");
+  computerBoard.style.pointerEvents = "none";
+  playerBoard.style.pointerEvents = "none";
+}
+//soundeffects

@@ -49,13 +49,18 @@
         <div id="computer-board" class="board">
 
         </div>
-        <h1 class="attack hidden">Attacking...</h1>
+        <h1 class="attack hidden">Attack!</h1>
       </div>
     </main>
     <div class="starter">
       <input type="text" id="player-name" placeholder="Enter your name">
       <span style="margin-bottom: 10px;" id="ageError" class="error-message" role="alert" aria-live="polite"></span>
       <button id="player-button">Play</button>
+    </div>
+    <div id="game-over-modal" class="hidden">
+      <div class="modal-content">
+        <h1 id="game-over-text"></h1>
+      </div>
     </div>
   </body>
 </html>

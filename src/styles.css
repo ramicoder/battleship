@@ -135,3 +135,24 @@ input:focus {
     border-radius: 4px;
     padding: 4px;
 }
+
+#game-over-modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.modal-content {
+    background-color: #1e293b;
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+    border: 2px solid #604a4a;
+}
+#game-over-modal.hidden {
+    display: none;
+}
