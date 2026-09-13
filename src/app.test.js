@@ -1,6 +1,5 @@
 import { createShip, createGameboard, createPlayer } from "./factories.js";
 
-
 test("Test vertical positioning", function () {
   let board = createGameboard();
   let ship5 = createShip(5);
@@ -133,14 +132,14 @@ test("Tracking all missed attacks", function () {
   board.receiveAttack(9, 4);
   board.receiveAttack(7, 2);
 
-  expect( board.getMissedShots()).toEqual([
+  expect(board.getMissedShots()).toEqual([
     [3, 5],
     [2, 5],
     [2, 3],
     [1, 3],
     [7, 7],
-    [9, 4]
-  ])
+    [9, 4],
+  ]);
 });
 
 test("Tracking all missed attacks with an off-bound attack", function () {
@@ -208,7 +207,7 @@ test("Board reporting if all ships are sunk", function () {
   board.receiveAttack(7, 0);
   board.receiveAttack(8, 0);
 
-  expect( board.allShipsSunk()).toBe(true);
+  expect(board.allShipsSunk()).toBe(true);
 });
 
 test("Board reporting if all ships are NOT sunk", function () {
@@ -248,23 +247,23 @@ test("Board reporting if all ships are NOT sunk", function () {
   expect(board.allShipsSunk()).toBe(false);
 });
 
-test("Player name check", function() {
-  let rami = createPlayer("Rami", "Human")
+test("Player name check", function () {
+  let rami = createPlayer("Rami", "Human");
   expect(rami.getName()).toEqual("Rami");
-})
+});
 
 test("Player type check", function () {
   let rami = createPlayer("Rami", "Human");
   expect(rami.getType()).toEqual("human");
 });
 
-test("Invalid player type check", function() {
-  let rami = createPlayer("Rami", "Humanoid")
+test("Invalid player type check", function () {
+  let rami = createPlayer("Rami", "Humanoid");
   expect(rami.getType()).toBe(null);
-})
+});
 
-test("Player board integration", function() {
-  let rami = createPlayer("Rami", "Human")
+test("Player board integration", function () {
+  let rami = createPlayer("Rami", "Human");
   let ship = createShip(2);
 
   expect(rami.board.placeShip(ship, 2, 4, "horizontal")).toEqual([
@@ -279,13 +278,13 @@ test("Player board integration", function() {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ]);
-})
+});
 
 test("Player board receiving attack", function () {
   let rami = createPlayer("Rami", "Human");
   let ship = createShip(2);
 
-  rami.board.placeShip(ship, 2, 4, "horizontal")
+  rami.board.placeShip(ship, 2, 4, "horizontal");
   expect(rami.board.receiveAttack(2, 5)).toBe(true);
 });
 

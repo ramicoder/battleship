@@ -72,16 +72,17 @@ export function createGameboard() {
         throw new Error("Orientation is not valid");
       }
       ships.push(ship);
-      console.log(`Console Logic: Ship ${ship.getId()} got placed at ${row}, ${col} with orientation ${orientation}`);
+      console.log(
+        `Console Logic: Ship ${ship.getId()} got placed at ${row}, ${col} with orientation ${orientation}`,
+      );
       return board;
     } catch (err) {
-        console.log(err.message)
-        return null;
+      console.log(err.message);
+      return null;
     }
   };
 
   let receiveAttack = (x, y) => {
-
     try {
       if (x < 0 || x > 9 || y < 0 || y > 9) {
         throw new Error("Position is not valid");
@@ -109,7 +110,7 @@ export function createGameboard() {
     console.log(ships);
     if (ships.find((s) => s.isSunk() === false)) return false;
     return true;
-  }
+  };
 
   function removeShip(ship) {
     ships.splice(ships.indexOf(ship), 1);
@@ -155,9 +156,11 @@ export function createGameboard() {
       placeShip(ship, startRow, startCol, currentOrientation);
       return false;
     }
-    console.log(`Console Logic: Ship ${ship.getId()}'s orientation switched to ${newOrientation}`);
+    console.log(
+      `Console Logic: Ship ${ship.getId()}'s orientation switched to ${newOrientation}`,
+    );
     return board;
-  }
+  };
 
   function isPositionValid(row, col) {
     if (row < 0 || row > 9 || col < 0 || col > 9 || board[row][col] !== 0) {
@@ -169,11 +172,20 @@ export function createGameboard() {
   let allShipsPlaced = () => {
     if (ships.length === 5) return true;
     return false;
-  }
+  };
 
   let getShips = () => ships;
 
-  return { getShips, board, getMissedShots, placeShip, receiveAttack, allShipsSunk, changeOrientation, allShipsPlaced };
+  return {
+    getShips,
+    board,
+    getMissedShots,
+    placeShip,
+    receiveAttack,
+    allShipsSunk,
+    changeOrientation,
+    allShipsPlaced,
+  };
 }
 
 export function createPlayer(name, type) {
@@ -182,10 +194,7 @@ export function createPlayer(name, type) {
   let getType = () => {
     try {
       type = type.trim().toLowerCase();
-      if (
-        type === "human" ||
-        type === "computer"
-      ) {
+      if (type === "human" || type === "computer") {
         return type;
       } else {
         throw new Error("Invalid player type");
@@ -194,9 +203,9 @@ export function createPlayer(name, type) {
       console.log(err.message);
       return null;
     }
-  }
+  };
 
-  return { getName, getType, board }
+  return { getName, getType, board };
 }
 
 export function randomPlacement(board) {
@@ -209,7 +218,8 @@ export function randomPlacement(board) {
   do {
     let randomRow = randomIndex();
     let randomCol = randomIndex();
-    let randomOrientation = (Math.floor(Math.random() * 2) === 1) ? "horizontal" : "vertical";
+    let randomOrientation =
+      Math.floor(Math.random() * 2) === 1 ? "horizontal" : "vertical";
     result = board.placeShip(ship1, randomRow, randomCol, randomOrientation);
   } while (result === null);
 
@@ -218,12 +228,7 @@ export function randomPlacement(board) {
     let randomCol = randomIndex();
     let randomOrientation =
       Math.floor(Math.random() * 2) === 1 ? "horizontal" : "vertical";
-    result = board.placeShip(
-      ship2,
-      randomRow,
-      randomCol,
-      randomOrientation,
-    );
+    result = board.placeShip(ship2, randomRow, randomCol, randomOrientation);
   } while (result === null);
 
   do {
@@ -231,12 +236,7 @@ export function randomPlacement(board) {
     let randomCol = randomIndex();
     let randomOrientation =
       Math.floor(Math.random() * 2) === 1 ? "horizontal" : "vertical";
-    result = board.placeShip(
-      ship3,
-      randomRow,
-      randomCol,
-      randomOrientation,
-    );
+    result = board.placeShip(ship3, randomRow, randomCol, randomOrientation);
   } while (result === null);
 
   do {
@@ -244,12 +244,7 @@ export function randomPlacement(board) {
     let randomCol = randomIndex();
     let randomOrientation =
       Math.floor(Math.random() * 2) === 1 ? "horizontal" : "vertical";
-    result = board.placeShip(
-      ship4,
-      randomRow,
-      randomCol,
-      randomOrientation,
-    );
+    result = board.placeShip(ship4, randomRow, randomCol, randomOrientation);
   } while (result === null);
 
   do {
@@ -257,14 +252,8 @@ export function randomPlacement(board) {
     let randomCol = randomIndex();
     let randomOrientation =
       Math.floor(Math.random() * 2) === 1 ? "horizontal" : "vertical";
-    result = board.placeShip(
-      ship5,
-      randomRow,
-      randomCol,
-      randomOrientation,
-    );
+    result = board.placeShip(ship5, randomRow, randomCol, randomOrientation);
   } while (result === null);
-
 }
 
 export function randomReceiveAttack(board) {
@@ -272,8 +261,8 @@ export function randomReceiveAttack(board) {
   let randomRow;
   let randomCol;
   do {
-     randomRow = randomIndex();
-     randomCol = randomIndex();
+    randomRow = randomIndex();
+    randomCol = randomIndex();
     result = board.receiveAttack(randomRow, randomCol);
   } while (result === null);
   return [randomRow, randomCol, result];
