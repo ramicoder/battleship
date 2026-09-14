@@ -51,13 +51,25 @@
         <h1 class="attack hidden">Attack!</h1>
       </div>
     </main>
-    <div class="starter">
-      <input type="text" id="player-name" placeholder="Enter your name">
-      <span style="margin-bottom: 10px;" id="ageError" class="error-message" role="alert" aria-live="polite"></span>
+    <div class="ultra-starter">
+      <div class="starter">
+        <input type="text" id="player-name" placeholder="Enter your name">
+        <span style="margin-bottom: 10px;" id="ageError" class="error-message" role="alert" aria-live="polite"></span>
 
-      <button id="player-button">Play</button>
-
-    </div>
+        <button id="player-button">Play</button>
+      </div >
+        <div class="mode">
+          <label for="easy">Easy</label>
+          <input type="radio" name="user_level" id="easy" checked>
+        </div>
+        <div class="mode">
+          <label for="medium">Medium</label>
+          <input type="radio" name="user_level" id="medium">
+        </div>
+        <div class="mode">
+          <label for="hard">Hard</label>
+          <input type="radio" name="user_level" id="hard">
+        </div>
     </div>
     <div id="game-over-modal" class="hidden">
       <div class="modal-content">

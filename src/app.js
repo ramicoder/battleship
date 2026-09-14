@@ -13,30 +13,20 @@ import {
   randomReceiveAttack,
 } from "./factories.js";
 
-/*
-<form id="modes">
-        <div class="mode">
-          <input type="radio" name="user_level" id="easy" checked>
-          <label for="easy">Easy</label>
-        </div>
-        <div class="mode">
-        <input type="radio" name="user_level" id="medium">
-          <label for="medium">Medium</label>
-        </div>
-        <div class="mode">
-            <input type="radio" name="user_level" id="hard">
-            <label for="hard">Hard</label>
-        </div>
-
-      </form>
- */
 
   const modal = document.getElementById("game-over-modal");
   const modalText = document.getElementById("game-over-text");
   const playAgain = document.getElementById("play-again");
 
+  const easyRadio = document.getElementById("easy");
+  const mediumRadio = document.getElementById("medium");
+  const hardRadio = document.getElementById("hard");
+
+  let radios = [easyRadio, mediumRadio, hardRadio];
+
   playAgain.addEventListener("click", () => location.reload()
   );
+
   const ship1 = createShip(1);
   const ship2 = createShip(2);
   const ship3 = createShip(3);
@@ -53,6 +43,7 @@ import {
 
   let player;
   let system;
+  let difficulty;
 
   const button = document.getElementById("player-button");
   button.disabled = "true";
@@ -276,6 +267,8 @@ import {
       input.style.backgroundColor = "#5e2929";
       return;
     } else {
+      difficulty = radios.find((radio) => radio.checked);
+      radios.map((radio) => radio.disabled = true);
       player = createPlayer(input.value, "human");
       system = createPlayer("The Matrix ", "computer");
 
@@ -327,8 +320,9 @@ import {
       attacking.classList.add("hidden");
       attacked.classList.remove("hidden");
       computerBoard.style.pointerEvents = "none";
-
+      if (difficulty === easyRadio) {
       setTimeout(getAttacked, 1200);
+      }
     }
   }
 
