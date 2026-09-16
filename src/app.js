@@ -287,6 +287,9 @@ button.addEventListener("click", () => {
   }
 });
 
+let adjacentAttempts = 0;
+let rowToAttack = 0;
+let colToAttack = 0;
 function attack(cell, x, y) {
   let sunkBefore = computerBoardLogic
     .getShips()
@@ -325,7 +328,11 @@ function attack(cell, x, y) {
       setTimeout(getAttacked, 1200);
     }
     else if (difficulty === mediumRadio) {
-      setTimeout(getAttackedMedium, 1200)
+
+      setTimeout(
+        () => getAttackedMedium(rowToAttack, colToAttack, adjacentAttempts),
+        1200,
+      );
     }
   }
 }
@@ -343,6 +350,7 @@ function getAttacked() {
   );
 
   if (attempt === true) {
+
     updateCellOnHit(targetCell, sunkBefore);
     if (playerBoardLogic.allShipsSunk()) {
       showGameOver(`${system.getName()} won!`);
@@ -369,78 +377,146 @@ function showGameOver(message) {
   playerBoard.style.pointerEvents = "none";
 }
 
-//to count attempts at hitting adjacent ones, max 4
-let attemptCounter = 0;
-//saves the hit index
-let currentHitIndex = [0, 0]
-const difficultyLevel = [getAttacked, getAttackedMedium];
+let attackedMediumAttempts = 0;
+function getAttackedMedium(rowToAttack, colToAttack, adjacentAttempts) {
 
-function getAttackedMedium() {
   let sunkBefore = shipsArr.filter((ship) => ship.isSunk()).length;
+  let row;
+  let col;
+  let attempt;
 
-  let notMissed = true;
-  let attackData = randomReceiveAttack(playerBoardLogic);
-  let row = attackData[0];
-  let col = attackData[1];
-  if (attemptCounter === 0) {
-    currentHitIndex[0] = attackData[0];
-    currentHitIndex[1] = attackData[1];
+  if (attackedMediumAttempts === 0) {
+    if (adjacentAttempts === 0) {
+      let attackData = randomReceiveAttack(playerBoardLogic);
+      row = attackData[0];
+      col = attackData[1];
+      attempt = attackData[2];
+      //row = 1, col = 5, attempt = true
+    } else {
+        row = rowToAttack;
+        col = colToAttack;
+        attempt = playerBoardLogic.receiveAttack((row, col));
+    }
   }
-  let attempt = attackData[2];
+
 
   let targetCell = playerBoard.querySelector(
     `.cell[data-row="${row}"][data-col="${col}"]`,
   );
 
-  while (notMissed === true) {
-    //init attempt
-    if (attempt === true) {
-      updateCellOnHit(targetCell, sunkBefore);
-      if (playerBoardLogic.allShipsSunk()) {
-        showGameOver(`${system.getName()} won!`);
-        lostAudio.play();
-        computerBoard.style.pointerEvents = "none";
-        playerBoard.style.pointerEvents = "none";
+  if (attempt === true) {
+    let sunkBefore = getSunkBefore();
+    updateCellOnHit(targetCell, sunkBefore);
+    if (playerBoardLogic.allShipsSunk()) {
+      showGameOver(`${system.getName()} won!`);
+      lostAudio.play();
+      computerBoard.style.pointerEvents = "none";
+      playerBoard.style.pointerEvents = "none";
+      return;
+    }
+
+    //upwards
+    if (adjacentAttempts === 0) {
+      attempt = playerBoardLogic.receiveAttack(row - 1, col);
+      if (attempt === null || attempt === false) {
+        //make it hit right next time
+        adjacentAttempts++;
+        // turn them to right
+        rowToAttack = row;
+        colToAttack = col + 1
+        targetCell = playerBoard.querySelector(
+          `.cell[data-row="${row - 1}"][data-col="${col}"]`,
+        );
+        targetCell.style.backgroundColor = "#604a4a";
+        splash.play();
+        computerBoard.style.pointerEvents = "auto";
         return;
+      } //to the right
+      else {
+
+          attackedMediumAttempts++;
+          setTimeout(
+            () => getAttackedMedium(rowToAttack, colToAttack, adjacentAttempts),
+            1200,
+          );
       }
-      //follow up attempt after init attempt
-      while (true) {
-        switch (attemptCounter) {
-          case 0:
-            attackData = receiveAttackMedium(playerBoardLogic, currentHitIndex[0] + 1, currentHitIndex[1]);
-            if (attackData[2] === true) { currentHitIndex[0] = currentHitIndex[0] + 1 };
-            updateCellOnHit(targetCell, sunkBefore);
-            break;
-          case 1:
-            attackData = receiveAttackMedium(playerBoardLogic, currentHitIndex[0], currentHitIndex[1] + 1);
-            if (attackData[2] === true) { currentHitIndex[1] = currentHitIndex[1] + 1 };
-            updateCellOnHit(targetCell, sunkBefore);
-            break;
-          case 2:
-            attackData = receiveAttackMedium(playerBoardLogic, row - 1, col);
-            if (attackData[2] === true) { currentHitIndex[0] = currentHitIndex[0] - 1 };
-            updateCellOnHit(targetCell, sunkBefore);
-            break;
-          case 3:
-            attackData = receiveAttackMedium(playerBoardLogic, row, col - 1);
-            if (attackData[2] === true) { currentHitIndex[1] = currentHitIndex[1] - 1 };
-            updateCellOnHit(targetCell, sunkBefore);
-            break;
-        };
-        attempt = false;
-        break;
+    } else if (adjacentAttempts === 1) {
+      attempt = playerBoardLogic.receiveAttack(rowToAttack, colToAttack);
+      if (attempt === null || attempt === false) {
+        //make it hit down next time
+        adjacentAttempts++;
+        //turn them to down
+        rowToAttack = row + 1;
+        colToAttack = col;
+        targetCell = playerBoard.querySelector(
+          `.cell[data-row="${row}"][data-col="${col + 1}"]`,
+        );
+        targetCell.style.backgroundColor = "#604a4a";
+        splash.play();
+        computerBoard.style.pointerEvents = "auto";
+        return;
+      } else {
+        attackedMediumAttempts++;
+        setTimeout(
+          () => getAttackedMedium(rowToAttack, colToAttack, adjacentAttempts),
+          1200,
+        );
+      }
+      //go downwards
+    } else if (adjacentAttempts === 2) {
+      attempt = playerBoardLogic.receiveAttack(rowToAttack, colToAttack);
+      if (attempt === null || attempt === false) {
+        //make it hit left next time
+        adjacentAttempts++;
+        //turn them left
+        rowToAttack = row;
+        colToAttack = col - 1;
+        targetCell = playerBoard.querySelector(
+          `.cell[data-row="${row + 1}"][data-col="${col}"]`,
+        );
+        targetCell.style.backgroundColor = "#604a4a";
+        splash.play();
+        computerBoard.style.pointerEvents = "auto";
+        return;
+      } else {
+        attackedMediumAttempts++;
+        setTimeout(
+          () => getAttackedMedium(rowToAttack, colToAttack, adjacentAttempts),
+          1200,
+        );
       }
     } else {
-      targetCell.style.backgroundColor = "#604a4a";
-      splash.play();
-
-      attacked.classList.add("hidden");
-      attacking.classList.remove("hidden");
-      computerBoard.style.pointerEvents = "auto";
-      notMissed = false;
-      attemptCounter++;
+      attempt = playerBoardLogic.receiveAttack(rowToAttack, colToAttack);
+      if (attempt === null || attempt === false) {
+        //make it hit left next time
+        adjacentAttempts = 0;
+        targetCell = playerBoard.querySelector(
+          `.cell[data-row="${row}"][data-col="${col - 1}"]`,
+        );
+        targetCell.style.backgroundColor = "#604a4a";
+        splash.play();
+        computerBoard.style.pointerEvents = "auto";
+        return;
+      } else {
+        attackedMediumAttempts++;
+        setTimeout(
+          () => getAttackedMedium(rowToAttack, colToAttack, adjacentAttempts),
+          1200,
+        );
+      }
     }
+  } else {
+    adjacentAttempts = 0;
+    attackedMediumAttempts = 0;
+    targetCell.style.backgroundColor = "#604a4a";
+    splash.play();
+
+    attacked.classList.add("hidden");
+    attacking.classList.remove("hidden");
+    computerBoard.style.pointerEvents = "auto";
+    return;
   }
+
 }
 
 function updateCellOnHit(targetCell, sunkBefore) {
@@ -455,3 +531,8 @@ function updateCellOnHit(targetCell, sunkBefore) {
   }
 }
 
+function getSunkBefore() {
+  return  computerBoardLogic
+    .getShips()
+    .filter((ship) => ship.isSunk()).length;
+}
