@@ -96,13 +96,13 @@ export function createGameboard() {
         return false;
       } else {
         let ship = ships.find((ship) => ship.getId() === board[x][y]);
-        ship.hit();
+        ship.hit()
         board[x][y] = -1;
         return true;
       }
     } catch (error) {
       console.log(error.message);
-      return false;
+      return null;
     }
   };
 
