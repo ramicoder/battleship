@@ -377,7 +377,6 @@ function getAttackedMedium() {
   let sunkBefore = shipsArr.filter((ship) => ship.isSunk()).length;
 
   //if it is the first attempt, update attempt to true/false
-
   let targetCell;
   //adjacentCount === 0 means its a new attempt
   if (adjacentCount === 0) {
@@ -564,7 +563,7 @@ function getAttackedMedium() {
         //checks right
         case 1:
           sunkBefore = shipsArr.filter((ship) => ship.isSunk()).length;
-          attempt = playerBoardLogic.receiveAttack(
+          let attempt = playerBoardLogic.receiveAttack(
             currentHitIndex[0],
             currentHitIndex[1] + 1,
           );
@@ -601,7 +600,7 @@ function getAttackedMedium() {
         //checks below
         case 2:
           sunkBefore = shipsArr.filter((ship) => ship.isSunk()).length;
-          attempt = playerBoardLogic.receiveAttack(
+          let attempt = playerBoardLogic.receiveAttack(
             currentHitIndex[0] + 1,
             currentHitIndex[1],
           );
@@ -638,7 +637,7 @@ function getAttackedMedium() {
         //checks left
         case 3:
           sunkBefore = shipsArr.filter((ship) => ship.isSunk()).length;
-          attempt = playerBoardLogic.receiveAttack(
+          let attempt = playerBoardLogic.receiveAttack(
             currentHitIndex[0],
             currentHitIndex[1] - 1,
           );
