@@ -321,7 +321,6 @@ function attack(cell, x, y) {
     if (difficulty === easyRadio) {
       setTimeout(getAttacked, 1200);
     } else if (difficulty === mediumRadio) {
-      console.log("hello");
       setTimeout(getAttackedMedium, 1200);
     }
   }
@@ -375,14 +374,15 @@ let currentHitIndex = [0, 0];
 
 function getAttackedMedium() {
   let sunkBefore = shipsArr.filter((ship) => ship.isSunk()).length;
-
+  let attempt;
   //if it is the first attempt, update attempt to true/false
   let targetCell;
   //adjacentCount === 0 means its a new attempt
   if (adjacentCount === 0) {
+    console.log(`attempt: ${adjacentCount}`);
     let attackData = randomReceiveAttack(playerBoardLogic);
     //check whether it's a hit or miss
-    let attempt = attackData[2];
+    attempt = attackData[2];
     let isRepeated = false;
 
     //if hit
@@ -552,6 +552,11 @@ function getAttackedMedium() {
     }
     //if miss
     else {
+
+      targetCell = playerBoard.querySelector(
+        `.cell[data-row="${attackData[0]}"][data-col="${attackData[1]}"]`,
+      );
+      updateCellOnMiss(targetCell);
       return;
     }
   }
@@ -563,7 +568,7 @@ function getAttackedMedium() {
         //checks right
         case 1:
           sunkBefore = shipsArr.filter((ship) => ship.isSunk()).length;
-          let attempt = playerBoardLogic.receiveAttack(
+          attempt = playerBoardLogic.receiveAttack(
             currentHitIndex[0],
             currentHitIndex[1] + 1,
           );
@@ -600,7 +605,7 @@ function getAttackedMedium() {
         //checks below
         case 2:
           sunkBefore = shipsArr.filter((ship) => ship.isSunk()).length;
-          let attempt = playerBoardLogic.receiveAttack(
+          attempt = playerBoardLogic.receiveAttack(
             currentHitIndex[0] + 1,
             currentHitIndex[1],
           );
@@ -637,16 +642,15 @@ function getAttackedMedium() {
         //checks left
         case 3:
           sunkBefore = shipsArr.filter((ship) => ship.isSunk()).length;
-          let attempt = playerBoardLogic.receiveAttack(
+          attempt = playerBoardLogic.receiveAttack(
             currentHitIndex[0],
             currentHitIndex[1] - 1,
           );
           if (attempt === null) {
-            if (adjacentCount === 3) {
-              adjacentCount = 0;
-            } else {
-              adjacentCount++;
-            }
+            adjacentCount = 0;
+            attacked.classList.add("hidden");
+            attacking.classList.remove("hidden");
+            computerBoard.style.pointerEvents = "auto";
           }
           //on hit
           else if (attempt === true) {
