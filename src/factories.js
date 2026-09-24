@@ -107,7 +107,6 @@ export function createGameboard() {
   };
 
   let allShipsSunk = () => {
-    console.log(ships);
     if (ships.find((s) => s.isSunk() === false)) return false;
     return true;
   };
