@@ -1,14 +1,19 @@
 import "./styles.css";
 import winSound from "./winner.mp3";
-import lostSound from "./lostAudio.mp3"
+import lostSound from "./lostAudio.mp3";
 import splashSound from "./splash.mp3";
 import hitSound from "./hit.mp3";
 import sinkSound from "./shipsink.mp3";
-import placeSound from "./placing.mp3"
-import {  createShip, createGameboard, createPlayer, randomPlacement, randomReceiveAttack} from "./factories.js";
+import placeSound from "./placing.mp3";
+import {
+  createShip,
+  createGameboard,
+  createPlayer,
+  randomPlacement,
+  randomReceiveAttack,
+} from "./factories.js";
 
 function start() {
-
   document.body.innerHTML = `<header>
       <h1 style="font-family: cursive; font-size: 60px;">Rami's Battleship</h1>
     </header>
@@ -18,27 +23,27 @@ function start() {
         <h2 style="margin-bottom: 30px; margin-top: 50px;">Place your ships!</h2>
         <div id="fleet-container" class="fleet">
 
-          <div class="ship" id="ship-5" data-length="5" draggable="true">
+          <div class="ship" id="ship-5" data-length="5" draggable="true" data-orientation="horizontal">
             <div class="ship-box"></div><div class="ship-box"></div><div class="ship-box"></div><div class="ship-box"></div><div class="ship-box"></div>
           </div>
 
-          <div class="ship" id="ship-4" data-length="4" draggable="true">
+          <div class="ship" id="ship-4" data-length="4" draggable="true" data-orientation="horizontal">
             <div class="ship-box"></div><div class="ship-box"></div><div class="ship-box"></div><div class="ship-box"></div>
           </div>
 
-          <div class="ship" id="ship-3" data-length="3" draggable="true">
+          <div class="ship" id="ship-3" data-length="3" draggable="true" data-orientation="horizontal">
             <div class="ship-box"></div><div class="ship-box"></div><div class="ship-box"></div>
           </div>
 
-          <div class="ship" id="ship-2" data-length="2" draggable="true">
+          <div class="ship" id="ship-2" data-length="2" draggable="true" data-orientation="horizontal">
             <div class="ship-box"></div><div class="ship-box"></div>
           </div>
 
-          <div class="ship" data-length="1" id="ship-1" style="margin-bottom: 30px;" draggable="true">
+          <div class="ship" data-length="1" id="ship-1" style="margin-bottom: 30px;" draggable="true" data-orientation="horizontal">
             <div class="ship-box"></div>
           </div>
         </div>
-        <span>When placed on the board, click to rotate</span>
+        <span>When placed on the board, click to rotate <br> OR Click above me to rotate ships</span>
       </div>
       <div class="player-side">
         <div id="player-board" class="board">
@@ -69,10 +74,10 @@ function start() {
   const modalText = document.getElementById("game-over-text");
   const playAgain = document.getElementById("play-again");
 
-
   playAgain.addEventListener("click", () => {
     start();
   });
+  let noShipsPlaced = true;
   const ship1 = createShip(1);
   const ship2 = createShip(2);
   const ship3 = createShip(3);
@@ -120,9 +125,33 @@ function start() {
       computerBoard.appendChild(cell);
     }
   }
-
-  let draggedBoxIndex = 0;
   const ships = document.querySelectorAll(".ship");
+
+  const fleet = document.querySelector(".fleet");
+  fleet.addEventListener("click", (e) => {
+    if (noShipsPlaced) {
+      if (fleet.style.flexDirection === "row") {
+        fleet.style.flexDirection = "column";
+        ships.forEach((ship) => {
+          ship.style.flexDirection = "row";
+          ship.dataset.orientation = "horizontal";
+        });
+        shipsArr.forEach((ship) => {
+          ship.setOrientation("horizontal");
+        });
+      } else {
+        fleet.style.flexDirection = "row";
+        ships.forEach((ship) => {
+          ship.style.flexDirection = "column";
+          ship.dataset.orientation = "vertical";
+        });
+        shipsArr.forEach((ship) => {
+          ship.setOrientation("vertical");
+        });
+      }
+    }
+  });
+  let draggedBoxIndex = 0;
 
   ships.forEach((ship) => {
     ship.addEventListener("mousedown", (e) => {
@@ -131,8 +160,9 @@ function start() {
 
     ship.addEventListener("dragstart", (e) => {
       e.dataTransfer.setData("length", e.currentTarget.dataset.length);
-      e.dataTransfer.setData("offsetX", draggedBoxIndex);
+      e.dataTransfer.setData("offset", draggedBoxIndex);
       e.dataTransfer.setData("shipId", e.currentTarget.id);
+      e.dataTransfer.setData("orientation", e.currentTarget.dataset.orientation);
     });
   });
 
@@ -144,20 +174,34 @@ function start() {
     });
 
     cell.addEventListener("drop", (e) => {
-      e.preventDefault();
 
       let length = parseInt(e.dataTransfer.getData("length"));
-      let offsetX = parseInt(e.dataTransfer.getData("offsetX"));
-
-      let row = parseInt(e.target.dataset.row);
-
-      let startCol = parseInt(e.target.dataset.col) - offsetX;
-
+      let offset = parseInt(e.dataTransfer.getData("offset"));
       let canPlace = true;
+      let row;
+      let startCol;
+
+      if (e.dataTransfer.getData("orientation") === "horizontal") {
+        row = parseInt(e.target.dataset.row);
+
+        startCol = parseInt(e.target.dataset.col) - offset;
+      } else {
+        row = parseInt(e.target.dataset.row) - offset;
+
+        startCol = parseInt(e.target.dataset.col);
+      }
+      let targetCell;
       for (let i = 0; i < length; i++) {
-        let targetCell = document.querySelector(
-          `.cell[data-row="${row}"][data-col="${startCol + i}"]`,
-        );
+        if (e.dataTransfer.getData("orientation") === "horizontal") {
+          targetCell = document.querySelector(
+            `.cell[data-row="${row}"][data-col="${startCol + i}"]`,
+          );
+        } else {
+          targetCell = document.querySelector(
+            `.cell[data-row="${row + i}"][data-col="${startCol}"]`,
+          );
+        }
+
 
         if (!targetCell || targetCell.classList.contains("ship-placed")) {
           canPlace = false;
@@ -165,15 +209,23 @@ function start() {
         }
       }
       if (canPlace) {
+
         for (let i = 0; i < length; i++) {
-          let targetCell = document.querySelector(
-            `.cell[data-row="${row}"][data-col="${startCol + i}"]`,
-          );
+          if (e.dataTransfer.getData("orientation") === "horizontal") {
+            targetCell = document.querySelector(
+              `.cell[data-row="${row}"][data-col="${startCol + i}"]`,
+            );
+          } else {
+            targetCell = document.querySelector(
+              `.cell[data-row="${row + i}"][data-col="${startCol}"]`,
+            );
+          }
           targetCell.classList.add("ship-placed");
+          targetCell.dataset.orientation =
+            e.dataTransfer.getData("orientation");
           targetCell.dataset.startRow = row;
           targetCell.dataset.startCol = startCol;
           targetCell.dataset.length = length;
-          targetCell.dataset.orientation = "horizontal";
         }
 
         let shipId = e.dataTransfer.getData("shipId");
@@ -182,23 +234,42 @@ function start() {
           placeAudio.play();
           dockedShip.setAttribute("draggable", "false");
           dockedShip.style.opacity = "0.3";
-          console.log(`Ship of length ${length} placed at ${row}, ${startCol}`);
-
+          noShipsPlaced = false;
           switch (length) {
             case 1:
-              playerBoardLogic.placeShip(ship1, row, startCol, "horizontal");
+              playerBoardLogic.placeShip(ship1, row, startCol, ship1.getOrientation());
               break;
             case 2:
-              playerBoardLogic.placeShip(ship2, row, startCol, "horizontal");
+              playerBoardLogic.placeShip(
+                ship2,
+                row,
+                startCol,
+                ship2.getOrientation(),
+              );
               break;
             case 3:
-              playerBoardLogic.placeShip(ship3, row, startCol, "horizontal");
+              playerBoardLogic.placeShip(
+                ship3,
+                row,
+                startCol,
+                ship3.getOrientation(),
+              );
               break;
             case 4:
-              playerBoardLogic.placeShip(ship4, row, startCol, "horizontal");
+              playerBoardLogic.placeShip(
+                ship4,
+                row,
+                startCol,
+                ship4.getOrientation(),
+              );
               break;
             case 5:
-              playerBoardLogic.placeShip(ship5, row, startCol, "horizontal");
+              playerBoardLogic.placeShip(
+                ship5,
+                row,
+                startCol,
+                ship5.getOrientation(),
+              );
               break;
           }
           if (playerBoardLogic.allShipsPlaced()) {
@@ -329,16 +400,15 @@ function start() {
     }
   });
 
-
   function attack(cell, x, y) {
-
-    let sunkBefore = computerBoardLogic.getShips().filter((ship) => ship.isSunk()).length;
+    let sunkBefore = computerBoardLogic
+      .getShips()
+      .filter((ship) => ship.isSunk()).length;
     if (isNaN(x) || isNaN(y)) return;
 
     let attempt = computerBoardLogic.receiveAttack(x, y);
 
     if (attempt === true) {
-
       let sunkAfter = computerBoardLogic
         .getShips()
         .filter((ship) => ship.isSunk()).length;
@@ -410,7 +480,6 @@ function start() {
     }
   }
 
-
   function showGameOver(message) {
     modalText.textContent = message;
     modal.classList.remove("hidden");
@@ -420,6 +489,3 @@ function start() {
 }
 
 start();
-
-
-
