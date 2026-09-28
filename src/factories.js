@@ -1,5 +1,6 @@
 export function createShip(length, hits = 0) {
   let id = length;
+  let orientation = "horizontal";
 
   let getLength = () => {
     return length;
@@ -21,7 +22,11 @@ export function createShip(length, hits = 0) {
 
   let getId = () => id;
 
-  return { getLength, setLength, getHits, hit, isSunk, getId };
+  let getOrientation = () => orientation;
+
+  let setOrientation = (newOrientation) => {orientation = newOrientation};
+
+  return { getLength, setLength, getHits, hit, isSunk, getId, getOrientation, setOrientation };
 }
 
 export function createGameboard() {
@@ -128,37 +133,33 @@ export function createGameboard() {
     let id = ship.getId();
     let startRow = -1;
     let startCol = -1;
-    let currentOrientation = "";
+    let currentOrientation = ship.getOrientation();
 
     for (let r = 0; r < 10; r++) {
       for (let c = 0; c < 10; c++) {
         if (board[r][c] === id) {
           startRow = r;
           startCol = c;
-
-          if (c + 1 < 10 && board[r][c + 1] === id) {
-            currentOrientation = "horizontal";
-          } else {
-            currentOrientation = "vertical";
-          }
           break;
         }
       }
       if (startRow !== -1) break;
     }
     removeShip(ship);
-    let newOrientation =
-      currentOrientation === "horizontal" ? "vertical" : "horizontal";
+    if (currentOrientation === "horizontal") {
+      currentOrientation = "vertical";
+      ship.setOrientation(currentOrientation);
+    } else {
+      currentOrientation = "horizontal";
+      ship.setOrientation(currentOrientation);
+    }
 
-    let success = placeShip(ship, startRow, startCol, newOrientation);
+    let success = placeShip(ship, startRow, startCol, currentOrientation);
 
     if (success === null) {
       placeShip(ship, startRow, startCol, currentOrientation);
       return false;
     }
-    console.log(
-      `Console Logic: Ship ${ship.getId()}'s orientation switched to ${newOrientation}`,
-    );
     return board;
   };
 
