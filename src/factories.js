@@ -52,7 +52,7 @@ export function createGameboard() {
       if (ships.find((s) => s === ship) !== undefined) {
         throw new Error("Ship with this length already exists");
       }
-
+      ship.setOrientation(orientation);
       orientation = orientation.trim().toLowerCase();
       if (orientation === "vertical") {
         for (let k = row; k < row + ship.getLength(); k++) {
@@ -133,6 +133,7 @@ export function createGameboard() {
     let id = ship.getId();
     let startRow = -1;
     let startCol = -1;
+    let originalOrientation = ship.getOrientation();
     let currentOrientation = ship.getOrientation();
 
     for (let r = 0; r < 10; r++) {
@@ -153,11 +154,11 @@ export function createGameboard() {
       currentOrientation = "horizontal";
       ship.setOrientation(currentOrientation);
     }
-
     let success = placeShip(ship, startRow, startCol, currentOrientation);
 
     if (success === null) {
-      placeShip(ship, startRow, startCol, currentOrientation);
+      ship.setOrientation(originalOrientation);
+      placeShip(ship, startRow, startCol, originalOrientation);
       return false;
     }
     return board;
