@@ -19,9 +19,8 @@ const playAgain = document.getElementById("play-again");
 
 const easyRadio = document.getElementById("easy");
 const mediumRadio = document.getElementById("medium");
-const hardRadio = document.getElementById("hard");
 
-let radios = [easyRadio, mediumRadio, hardRadio];
+let radios = [easyRadio, mediumRadio];
 
 playAgain.addEventListener("click", () => location.reload());
 
@@ -371,8 +370,10 @@ function showGameOver(message) {
 let adjacentCount = 0;
 //saves the hit index
 let currentHitIndex = [0, 0];
-
-function getAttackedMedium() {
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+async function getAttackedMedium() {
   let sunkBefore = shipsArr.filter((ship) => ship.isSunk()).length;
   let attempt;
   //if it is the first attempt, update attempt to true/false
@@ -391,7 +392,8 @@ function getAttackedMedium() {
       targetCell = playerBoard.querySelector(
         `.cell[data-row="${currentHitIndex[0]}"][data-col="${currentHitIndex[1]}"]`,
       );
-      updateCellOnHit(targetCell, sunkBefore)
+      updateCellOnHit(targetCell, sunkBefore);
+      await delay(1000);
 
       while (isRepeated === false) {
         switch (adjacentCount) {
@@ -420,7 +422,8 @@ function getAttackedMedium() {
               targetCell = playerBoard.querySelector(
                 `.cell[data-row="${currentHitIndex[0]}"][data-col="${currentHitIndex[1]}"]`,
               );
-             updateCellOnHit(targetCell, sunkBefore)
+              updateCellOnHit(targetCell, sunkBefore)
+              await delay(1000);
             }
             //on miss
             else {
@@ -435,6 +438,7 @@ function getAttackedMedium() {
                 `.cell[data-row="${currentHitIndex[0] - 1}"][data-col="${currentHitIndex[1]}"]`,
               );
               updateCellOnMiss(targetCell);
+              await delay(1000);
               return;
             }
             break;
@@ -464,6 +468,7 @@ function getAttackedMedium() {
                 `.cell[data-row="${currentHitIndex[0]}"][data-col="${currentHitIndex[1]}"]`,
               );
               updateCellOnHit(targetCell, sunkBefore)
+              await delay(1000);
             }
             //on miss
             else {
@@ -478,6 +483,7 @@ function getAttackedMedium() {
                 `.cell[data-row="${currentHitIndex[0]}"][data-col="${currentHitIndex[1] + 1}"]`,
               );
               updateCellOnMiss(targetCell);
+              await delay(1000);
               return;
             }
             break;
@@ -506,6 +512,7 @@ function getAttackedMedium() {
                 `.cell[data-row="${currentHitIndex[0]}"][data-col="${currentHitIndex[1]}"]`,
               );
               updateCellOnHit(targetCell, sunkBefore)
+              await delay(1000);
             }
             //on miss
             else {
@@ -520,6 +527,7 @@ function getAttackedMedium() {
                 `.cell[data-row="${currentHitIndex[0] + 1}"][data-col="${currentHitIndex[1]}"]`,
               );
               updateCellOnMiss(targetCell);
+              await delay(1000);
               return;
             }
             break;
@@ -544,6 +552,7 @@ function getAttackedMedium() {
                 `.cell[data-row="${currentHitIndex[0]}"][data-col="${currentHitIndex[1]}"]`,
               );
               updateCellOnHit(targetCell, sunkBefore)
+              await delay(1000);
             }
             //on miss
             else {
@@ -558,6 +567,7 @@ function getAttackedMedium() {
                 `.cell[data-row="${currentHitIndex[0]}"][data-col="${currentHitIndex[1] - 1}"]`,
               );
               updateCellOnMiss(targetCell);
+              await delay(1000);
               return;
             }
             break;
@@ -574,6 +584,7 @@ function getAttackedMedium() {
         `.cell[data-row="${attackData[0]}"][data-col="${attackData[1]}"]`,
       );
       updateCellOnMiss(targetCell);
+      await delay(1000);
       return;
     }
   }
@@ -606,6 +617,7 @@ function getAttackedMedium() {
               `.cell[data-row="${currentHitIndex[0]}"][data-col="${currentHitIndex[1]}"]`,
             );
             updateCellOnHit(targetCell, sunkBefore)
+            await delay(1000);
           }
           //on miss
           else {
@@ -620,6 +632,7 @@ function getAttackedMedium() {
               `.cell[data-row="${currentHitIndex[0]}"][data-col="${currentHitIndex[1] + 1}"]`,
             );
             updateCellOnMiss(targetCell);
+            await delay(1000);
             return;
           }
           break;
@@ -647,6 +660,7 @@ function getAttackedMedium() {
               `.cell[data-row="${currentHitIndex[0]}"][data-col="${currentHitIndex[1]}"]`,
             );
             updateCellOnHit(targetCell, sunkBefore)
+            await delay(1000);
           }
           //on miss
           else {
@@ -661,6 +675,7 @@ function getAttackedMedium() {
               `.cell[data-row="${currentHitIndex[0] + 1}"][data-col="${currentHitIndex[1]}"]`,
             );
             updateCellOnMiss(targetCell);
+            await delay(1000);
             return;
           }
           break;
@@ -683,6 +698,7 @@ function getAttackedMedium() {
               `.cell[data-row="${currentHitIndex[0]}"][data-col="${currentHitIndex[1]}"]`,
             );
             updateCellOnHit(targetCell, sunkBefore)
+            await delay(700);
           }
           //on miss
           else {
@@ -697,6 +713,7 @@ function getAttackedMedium() {
               `.cell[data-row="${currentHitIndex[0]}"][data-col="${currentHitIndex[1] - 1}"]`,
             );
             updateCellOnMiss(targetCell);
+            await delay(1000);
             return;
           }
           break;
@@ -737,3 +754,5 @@ function checkPlayerLoss() {
     return;
   }
 }
+
+//MAKE SURE TO MERGE THE CHANGE IMPLEMENTED IN MAIN TO BE ABLE TO ROTATE SHIPS FROM THE START
